@@ -79,7 +79,7 @@ def sign_in():
     }
 
     try:
-        response = requests.post('https://fangkong.hnu.edu.cn/api/v1/account/sign_in',
+        response = requests.post('https://fangkong.hnu.edu.cn/api/v1/account/login',
                                  headers=sign_in_headers,
                                  data=json.dumps(sign_in_dict))
 
@@ -154,7 +154,7 @@ def clock_in(type, clock_in_headers):
     clock_in_dict['IsTouch'] = "0"  # 接触高危人员
 
     try:
-        response = requests.post('https://fangkong.hnu.edu.cn/api/v1/clock_inlog/add',
+        response = requests.post('https://fangkong.hnu.edu.cn/api/v1/clockinlog/add',
                                  headers=clock_in_headers,
                                  data=json.dumps(clock_in_dict))
 
