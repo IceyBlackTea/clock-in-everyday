@@ -1,0 +1,70 @@
+{
+    "type_" : "at_school",
+    "send_mail": true,
+    "baidu_ocr": {
+        "api_key": "xxxxxxxx",
+        "secret_key": "xxxxxxxx"
+    },
+    "sign_in_config": {
+        "id": "xxxxxxxx",
+        "pwd": "xxxxxxxx"
+    },
+    "clock_in_config": {
+        "at_school": {
+            "RealAddress": "xxxxxxxx",
+            "RealCity": "长沙市",
+            "RealCounty": "岳麓区",
+            "RealProvince": "湖南省",
+            "BackState": 1,
+            "Latitude": null,
+            "Longitude": null,
+            "MorningTemp": "36.5",
+            "NightTemp": "36.5",
+            "tripinfolist": []
+        },
+        "at_home": {
+            "IsInCampus": "0",
+            "QRCodeColor": "绿色",
+            "IsNormalTemperature": "1",
+            "Temperature": null,
+            "RealAddress": "xxxx",
+            "RealCity": "xxxx",
+            "RealCounty": "xxxx",
+            "RealProvince": "xxxxx",
+            "IsSuspected": "0",
+            "IsTouch": "0",
+            "IsUnusual": "0",
+            "IsInsulated": "0",
+            "IsDiagnosis": "0",
+            "IsViaHuBei": "0",
+            "IsViaWuHan": "0",
+            "Latitude": null,
+            "Longitude": null,
+            "TouchInfo": "",
+            "UnusualInfo": "",
+            "InsulatedAddress": "",
+            "tripinfolist": [
+                {
+                    "aTripDate": "",
+                    "FromAdr": "",
+                    "ToAdr": "",
+                    "Number": "",
+                    "trippersoninfolist": []
+                }
+            ],
+            "dailyinfo": {
+                "IsVia": "0",
+                "DateTrip": ""
+            },
+            "toucherinfolist": []
+        }
+    },
+    "mail_config": {
+        "host": "xxxx",
+        "sender": "xxxxx",
+        "auth": "xxxxx",
+        "receivers": [
+            "xxxxx@xxxx"
+        ]
+    }
+}
