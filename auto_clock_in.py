@@ -2,7 +2,7 @@
 Author: IceyBlackTea
 Date: 2021-11-05 10:30:32
 LastEditors: IceyBlackTea
-LastEditTime: 2021-11-29 00:12:04
+LastEditTime: 2022-07-02 11:06:30
 FilePath: /clock-in-everyday/auto_clock_in.py
 Description: Copyright © 2021 IceyBlackTea. All rights reserved.
 '''
@@ -32,7 +32,7 @@ def clock_in(config):
             flag = False
 
             try:
-                headers = utils.sign_in(config['baidu_ocr'], config['sign_in_config'])
+                token, headers = utils.sign_in(config['baidu_ocr'], config['sign_in_config'])
 
             except Exception as e:
                 utils.handle_error(e)
@@ -40,7 +40,7 @@ def clock_in(config):
             else:
                 try:
                     clock_in_config = config['clock_in_config'][config['type_']]
-                    utils.clock_in(clock_in_config, headers)
+                    utils.clock_in(clock_in_config, token, headers)
 
                 except Exception as e:
                     utils.handle_error(e)

@@ -107,14 +107,14 @@ def get_token_var_code(config):
 
 
 def sign_in(baidu_ocr_config, sign_in_config):
-    token, var_code = get_token_var_code(baidu_ocr_config)
+    sign_in_token, var_code = get_token_var_code(baidu_ocr_config)
 
     sign_in_url = 'https://fangkong.hnu.edu.cn/api/v1/account/login'
 
     sign_in_data = {
         'Code': sign_in_config['id'],
         'Password': base64.b64decode(sign_in_config['pwd']).decode("utf-8"),
-        'Token': token,
+        'Token': sign_in_token,
         'VerCode': var_code,
         'WechatUserinfoCode': ''
     }
@@ -179,7 +179,7 @@ def sign_in(baidu_ocr_config, sign_in_config):
 
             print(get_local_time(), 'login succeeded.')
 
-            return clock_in_headers
+            return sign_in_token, clock_in_headers
 
         else:
             if res_json['code'] == 1002:
@@ -189,8 +189,11 @@ def sign_in(baidu_ocr_config, sign_in_config):
                 raise Exception('login failed: other reason.')
 
 
-def clock_in(clock_in_config, clock_in_headers):
+def clock_in(clock_in_config, sign_in_token, clock_in_headers):
     clock_in_url = 'https://fangkong.hnu.edu.cn/api/v1/clockinlog/add'
+
+    clock_in_config["timestamp"] = str(int(time.time()))
+    clock_in_config["sign"] = sign_in_token
 
     try:
         response = requests.post(clock_in_url,
@@ -214,6 +217,7 @@ def clock_in(clock_in_config, clock_in_headers):
             return True
 
         else:
+            print(res_json)
             raise Exception('clockin failed: other reason')
 
 
@@ -224,11 +228,11 @@ def send_mail(mail_config, subject, content):
     message['To'] =  Header("time to sleep!", 'utf-8')
 
     try:
-        smtp_mail = smtplib.SMTP_SSL(mail_config['host'], 465) 
-
+        smtp_mail = smtplib.SMTP_SSL(mail_config['host'], mail_config['port']) 
+        
         smtp_mail.login(mail_config['sender'], 
                         base64.b64decode(mail_config['auth']).decode("utf-8"))
- 
+
         smtp_mail.sendmail(mail_config['sender'], 
                         mail_config['receivers'],
                         message.as_string())

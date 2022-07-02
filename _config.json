@@ -1,5 +1,5 @@
 {
-    "type_" : "at_school",
+    "type_" : "at_home",
     "send_mail": true,
     "baidu_ocr": {
         "api_key": "xxxxxxxx",
@@ -23,40 +23,32 @@
             "tripinfolist": []
         },
         "at_home": {
+            "BackState": 1,
+            "BackedAddress": "",
+            "BuildingName": null,
+            "InsulatedAddress": null,
             "IsInCampus": "0",
-            "QRCodeColor": "绿色",
+            "IsInDorm": "0",
+            "IsLeaveOrBackToday": "0",
             "IsNormalTemperature": "1",
-            "Temperature": null,
+            "IsOtherRedQr": "0",
+            "IsUnusual": "0",
+            "IsViaHuBei": "0",
+            "Latitude": null,
+            "Longitude": null,
+            "MorngingTemp": "36.5",
+            "NightTemp": "36.5",
+            "ParkName": null,
+            "QRCodeColor": "绿色",
             "RealAddress": "xxxx",
             "RealCity": "xxxx",
             "RealCounty": "xxxx",
-            "RealProvince": "xxxxx",
-            "IsSuspected": "0",
-            "IsTouch": "0",
-            "IsUnusual": "0",
-            "IsInsulated": "0",
-            "IsDiagnosis": "0",
-            "IsViaHuBei": "0",
-            "IsViaWuHan": "0",
-            "Latitude": null,
-            "Longitude": null,
-            "TouchInfo": "",
+            "RealProvince": "xxxx",
+            "Temperature": "36.5",
+            "UnBackReason": "",
+            "UnBackType": "家中有事",
             "UnusualInfo": "",
-            "InsulatedAddress": "",
-            "tripinfolist": [
-                {
-                    "aTripDate": "",
-                    "FromAdr": "",
-                    "ToAdr": "",
-                    "Number": "",
-                    "trippersoninfolist": []
-                }
-            ],
-            "dailyinfo": {
-                "IsVia": "0",
-                "DateTrip": ""
-            },
-            "toucherinfolist": []
+            "tripinfolist": []
         }
     },
     "mail_config": {

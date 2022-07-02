@@ -39,7 +39,7 @@ pip3 install requests
 
 在校或在家，根据 `type_` 不同打卡信息不同.
 
-根据其他参数，可选为`at-school` 或 `at-home`.
+根据其他参数，可选为`at_school` 或 `at_home`.
 
 #### `send_mail`
 
