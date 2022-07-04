@@ -1,5 +1,4 @@
 # encoding:utf-8
-from sqlite3 import Timestamp
 import requests
 import base64
 import time
