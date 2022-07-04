@@ -1,8 +1,11 @@
 # encoding:utf-8
+from sqlite3 import Timestamp
 import requests
 import base64
 import time
 import json
+import hashlib
+
 import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
@@ -69,7 +72,7 @@ def get_login_token():
         response = requests.get('https://fangkong.hnu.edu.cn/api/v1/account/getimgvcode')
 
     except requests.exceptions.RequestException:
-        raise Exception('get access token out of time，network error')
+        raise Exception('get access token out of time, network error.')
 
     else:
         res_json = response.json()
@@ -90,7 +93,7 @@ def get_token_var_code(config):
         response = requests.get(img_url)
 
     except requests.exceptions.RequestException as e:
-        raise Exception('get var img out of time, network error')
+        raise Exception('get var img out of time, network error.')
 
     else:
         url_content = response.content
@@ -134,7 +137,7 @@ def sign_in(baidu_ocr_config, sign_in_config):
                                  data=json.dumps(sign_in_data))
 
     except requests.exceptions.RequestException:
-        raise Exception('can\'t fetch the login url，network error')
+        raise Exception('can\'t fetch the login url, network error.')
 
     else:
         res_json = response.json()
@@ -186,14 +189,17 @@ def sign_in(baidu_ocr_config, sign_in_config):
                 raise Exception('login failed: the var code was wrong.')
 
             else:
-                raise Exception('login failed: other reason.')
+                raise Exception('login failed: the other reason.')
 
 
 def clock_in(clock_in_config, sign_in_token, clock_in_headers):
     clock_in_url = 'https://fangkong.hnu.edu.cn/api/v1/clockinlog/add'
 
-    clock_in_config["timestamp"] = str(int(time.time()))
-    clock_in_config["sign"] = sign_in_token
+    timestamp = str(int(round(time.time() * 1000)))
+    sign = hashlib.md5((timestamp + "|hnu123456").encode('utf-8')).hexdigest()
+
+    clock_in_config["timestamp"] = timestamp
+    clock_in_config["sign"] = sign
 
     try:
         response = requests.post(clock_in_url,
@@ -206,19 +212,23 @@ def clock_in(clock_in_config, sign_in_token, clock_in_headers):
     else:
         res_json = response.json()
 
+        print(res_json)
+
         if res_json['code'] == 0:
             print(get_local_time(), 'clock in succeeded.')
 
             return True
         
         elif res_json['code'] == 1:
+            if not res_json['data']:
+                raise Exception('clockin failed: sign error.')
+
             print(get_local_time(), 'already clocked in today!')
 
             return True
 
         else:
-            print(res_json)
-            raise Exception('clockin failed: other reason')
+            raise Exception('clockin failed: the other reason.')
 
 
 def send_mail(mail_config, subject, content):
