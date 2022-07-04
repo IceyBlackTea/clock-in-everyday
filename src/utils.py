@@ -211,15 +211,13 @@ def clock_in(clock_in_config, sign_in_token, clock_in_headers):
     else:
         res_json = response.json()
 
-        print(res_json)
-
         if res_json['code'] == 0:
             print(get_local_time(), 'clock in succeeded.')
 
             return True
         
         elif res_json['code'] == 1:
-            if not res_json['data']:
+            if res_json['msg'] == "请在“湖南大学”微信公众号登录打卡":
                 raise Exception('clockin failed: sign error.')
 
             print(get_local_time(), 'already clocked in today!')
