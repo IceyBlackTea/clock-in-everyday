@@ -31,7 +31,7 @@ pip3 install requests
 ## Run
 
 1. 修改 `_config.json` 内容，并重命名为 `config.json`
-2. `python3 auto_clock_in.py`
+2. `python3 ./src/auto_clock_in.py`
 
 ### About `config.json`
 
