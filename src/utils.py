@@ -4,6 +4,7 @@ import base64
 import time
 import json
 import hashlib
+import random
 
 import smtplib
 from email.mime.text import MIMEText
@@ -22,7 +23,7 @@ def get_access_token(api_key, secret_key):
 
     else:
         raise Exception('get access tokon faild')
-    
+
 
 def baidu_ocr(config, img_base64):
     request_url = 'https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic'
@@ -45,7 +46,7 @@ def baidu_ocr(config, img_base64):
 
     else:
         data = response.json()
-        
+
         if data.__contains__('words_result'):
             return data['words_result'][0]['words']
 
@@ -55,7 +56,7 @@ def baidu_ocr(config, img_base64):
                         data['error_code'] == 111:
                     error_message = 'access for OCR service failed,'\
                         'Access token out of time or invalid.'
-                        
+
                     raise Exception(error_message)
 
                 else:
@@ -68,7 +69,8 @@ def baidu_ocr(config, img_base64):
 
 def get_login_token():
     try:
-        response = requests.get('https://fangkong.hnu.edu.cn/api/v1/account/getimgvcode')
+        response = requests.get(
+            'https://fangkong.hnu.edu.cn/api/v1/account/getimgvcode')
 
     except requests.exceptions.RequestException:
         raise Exception('get access token out of time, network error.')
@@ -113,12 +115,20 @@ def sign_in(baidu_ocr_config, sign_in_config):
 
     sign_in_url = 'https://fangkong.hnu.edu.cn/api/v1/account/login'
 
+    nonce = random.randint(0, 9999999)
+    timestamp = str(int(round(time.time() * 1000)))
+    sign = hashlib.md5((timestamp + "|" + str(nonce) +
+                       "|hnu123456").encode('utf-8')).hexdigest()
+
     sign_in_data = {
         'Code': sign_in_config['id'],
-        'Password': base64.b64decode(sign_in_config['pwd']).decode("utf-8"),
+        'Password': sign_in_config['pwd'],
         'Token': sign_in_token,
         'VerCode': var_code,
-        'WechatUserinfoCode': ''
+        'WechatUserinfoCode': None,
+        'nonce': nonce,
+        "sign": sign,
+        "timestamp": timestamp
     }
 
     sign_in_headers = {
@@ -194,9 +204,12 @@ def sign_in(baidu_ocr_config, sign_in_config):
 def clock_in(clock_in_config, sign_in_token, clock_in_headers):
     clock_in_url = 'https://fangkong.hnu.edu.cn/api/v1/clockinlog/add'
 
+    nonce = random.randint(0, 9999999)
     timestamp = str(int(round(time.time() * 1000)))
-    sign = hashlib.md5((timestamp + "|hnu123456").encode('utf-8')).hexdigest()
+    sign = hashlib.md5((timestamp + "|" + str(nonce) +
+                       "|hnu123456").encode('utf-8')).hexdigest()
 
+    clock_in_config["nonce"] = nonce
     clock_in_config["timestamp"] = timestamp
     clock_in_config["sign"] = sign
 
@@ -215,9 +228,11 @@ def clock_in(clock_in_config, sign_in_token, clock_in_headers):
             print(get_local_time(), 'clock in succeeded.')
 
             return True
-        
+
         elif res_json['code'] == 1:
             if res_json['msg'] == "请在“湖南大学”微信公众号登录打卡":
+                raise Exception('clockin failed: sign error.')
+            elif res_json['msg'] == "签名验证失败，请重试！":
                 raise Exception('clockin failed: sign error.')
 
             print(get_local_time(), 'already clocked in today!')
@@ -231,21 +246,21 @@ def clock_in(clock_in_config, sign_in_token, clock_in_headers):
 def send_mail(mail_config, subject, content):
     message = MIMEText(content, 'plain', 'utf-8')
     message['Subject'] = Header(subject, 'utf-8')
-    message['From'] = Header("no-reply@everyday.clock.in", 'utf-8')  
-    message['To'] =  Header("time to sleep!", 'utf-8')
+    message['From'] = Header("no-reply@everyday.clock.in", 'utf-8')
+    message['To'] = Header("time to sleep!", 'utf-8')
 
     try:
-        smtp_mail = smtplib.SMTP_SSL(mail_config['host'], mail_config['port']) 
-        
-        smtp_mail.login(mail_config['sender'], 
+        smtp_mail = smtplib.SMTP_SSL(mail_config['host'], mail_config['port'])
+
+        smtp_mail.login(mail_config['sender'],
                         base64.b64decode(mail_config['auth']).decode("utf-8"))
 
-        smtp_mail.sendmail(mail_config['sender'], 
-                        mail_config['receivers'],
-                        message.as_string())
+        smtp_mail.sendmail(mail_config['sender'],
+                           mail_config['receivers'],
+                           message.as_string())
 
         smtp_mail.quit()
-        
+
     except smtplib.SMTPException:
         print(get_local_time(), 'Mail send failed!')
 
@@ -255,7 +270,7 @@ def send_mail(mail_config, subject, content):
 
 def get_config():
     try:
-        with open('./config.json','r',encoding='utf8') as fp:
+        with open('./config.json', 'r', encoding='utf8') as fp:
             config = json.load(fp)
 
     except Exception:
@@ -301,4 +316,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

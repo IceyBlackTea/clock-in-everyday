@@ -2,7 +2,7 @@
 Author: IceyBlackTea
 Date: 2021-11-05 10:30:32
 LastEditors: IceyBlackTea
-LastEditTime: 2022-07-16 11:31:32
+LastEditTime: 2022-07-18 05:58:40
 FilePath: /clock-in-everyday/src/auto_clock_in.py
 Description: Copyright © 2021 IceyBlackTea. All rights reserved.
 '''
