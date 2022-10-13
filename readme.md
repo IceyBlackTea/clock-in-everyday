@@ -18,8 +18,11 @@
 
 `requests`
 
+`pycryptodome`
+
 ```
 pip3 install requests
+pip3 install pycryptodome
 ```
 
 ### Baidu AI OCR
@@ -92,3 +95,6 @@ pip3 install requests
 
 > 2022.7 原本提示不能网页端打卡准备一直手动了，结果现在又可以了；重新检查网页发现加了些新的验证，简单改改自动打卡复活！
 > 这xx打卡系统能不能不要自己出问题啊，真的是。。。
+
+> 2022.10 打卡系统两部分更新，一方面继续原本的 md5 加密，另一个是账号密码 des 加密。
+> 另外如果使用发觉登录报错非法字符，检查密码是不是有 `and`，`or` 之类的连接符。
