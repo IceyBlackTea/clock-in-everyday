@@ -1,13 +1,13 @@
 {
-    "type_" : "at_home",
+    "type_": "at_home",
     "send_mail": true,
     "baidu_ocr": {
         "api_key": "xxxxxxxx",
         "secret_key": "xxxxxxxx"
     },
     "sign_in_config": {
-        "id": "xxxxxxxx",
-        "pwd": "xxxxxxxx"
+        "id": "your_school_id",
+        "pwd": "base64(your_pwd)"
     },
     "clock_in_config": {
         "at_school": {
@@ -20,7 +20,15 @@
             "Longitude": null,
             "MorningTemp": "36.5",
             "NightTemp": "36.5",
-            "tripinfolist": []
+            "tripinfolist": [],
+            "QRCodeColor": "绿色",
+            "IsInCampus": "1",
+            "IsInDorm": "1",
+            "IsLeaveOrBackToday": "0",
+            "IsNormalTemperature": "1",
+            "IsOtherRedQr": "0",
+            "IsUnusual": "0",
+            "IsViaHuBei": "0"
         },
         "at_home": {
             "BackState": 1,

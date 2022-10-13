@@ -6,6 +6,9 @@ import json
 import hashlib
 import random
 
+from Crypto.Cipher import DES
+import Crypto.Util.Padding as PAD
+
 import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
@@ -109,6 +112,12 @@ def get_token_var_code(config):
             raise(e)
             # sys.exit(-1)
 
+def des_encrypt(text, key, iv ):
+    cipher = DES.new(key.encode("utf-8"), DES.MODE_CBC, iv.encode("utf-8"))
+    pad_text = PAD.pad(text.encode("utf-8"), 8, 'pkcs7')
+    secret = base64.b64encode(cipher.encrypt(pad_text)).decode("utf-8")
+    return secret
+
 
 def sign_in(baidu_ocr_config, sign_in_config):
     sign_in_token, var_code = get_token_var_code(baidu_ocr_config)
@@ -120,9 +129,12 @@ def sign_in(baidu_ocr_config, sign_in_config):
     sign = hashlib.md5((timestamp + "|" + str(nonce) +
                        "|hnu123456").encode('utf-8')).hexdigest()
 
+    secret_code = des_encrypt(sign_in_config['id'], "hnu88888", "hnu88888")
+    secret_pwd = des_encrypt(base64.b64decode(sign_in_config['pwd']).decode("utf-8"), "hnu88888", "hnu88888")
+
     sign_in_data = {
-        'Code': sign_in_config['id'],
-        'Password': sign_in_config['pwd'],
+        'Code': secret_code,
+        'Password': secret_pwd,
         'Token': sign_in_token,
         'VerCode': var_code,
         'WechatUserinfoCode': None,
@@ -198,6 +210,7 @@ def sign_in(baidu_ocr_config, sign_in_config):
                 raise Exception('login failed: the var code was wrong.')
 
             else:
+                print(res_json)
                 raise Exception('login failed: the other reason.')
 
 
@@ -240,6 +253,7 @@ def clock_in(clock_in_config, sign_in_token, clock_in_headers):
             return True
 
         else:
+            print(res_json)
             raise Exception('clockin failed: the other reason.')
 
 
